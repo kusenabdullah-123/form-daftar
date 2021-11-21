@@ -2,6 +2,7 @@ const http = require("http");
 const fs = require("fs/promises");
 const path = require("path");
 const { parse } = require("querystring");
+const formidable = require("formidable");
 
 http
   .createServer(async (req, res) => {
@@ -10,7 +11,7 @@ http
     const id = data.map((item) => item.id);
     const max = data.length > 0 ? Math.max(...id) : 0;
     if (req.method == "GET") {
-      if (req.url == "/data") {
+      if (req.url == "/anggota") {
         res.writeHead(200, { "Content-Type": "application/json" });
         res.end(JSON.stringify({ status: "success", data }));
       } else {
@@ -18,26 +19,35 @@ http
         res.end(JSON.stringify({ msg: "404 Not Found" }));
       }
     } else if (req.method == "POST") {
-      let body = "";
-      req.on("data", (chunk) => {
-        body += chunk.toString();
-      });
-      req.on("end", async () => {
-        let resultPost = parse(body);
-        resultPost["id"] = max + 1;
-        data.push(resultPost);
-        await fs.writeFile(
-          path.join(__dirname, "/data.json"),
-          JSON.stringify(data),
-          "utf-8"
-        );
-        res.writeHead(200, { "Content-Type": "application/json" });
-        res.end(JSON.stringify({ status: "success" }));
+      const form = formidable({ multiples: true });
+      form.parse(req,(err, fields, files)=>{
+        if (err) {
+        res.writeHead(400, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ status:400 }));
+        }
+        
+
+      })
+      // let body = "";
+      // req.on("data", (chunk) => {
+      //   body += chunk.toString();
+      // });
+      // req.on("end", async () => {
+      //   let resultPost = parse(body);
+      //   resultPost["id"] = max + 1;
+      //   data.push(resultPost);
+      //   await fs.writeFile(
+      //     path.join(__dirname, "/data.json"),
+      //     JSON.stringify(data),
+      //     "utf-8"
+      //   );
+      //   res.writeHead(200, { "Content-Type": "application/json" });
+      //   res.end(JSON.stringify({ status: "success" }));
       });
     } else if (req.method == "DELETE") {
       const urlSplit = req.url.split("?");
       const i = urlSplit[1].split("=")[1];
-      if (urlSplit[0] == "/data") {
+      if (urlSplit[0] == "/anggota") {
         const newData = data.filter((item) => item.id !== Number.parseInt(i));
         await fs.writeFile(
           path.join(__dirname, "/data.json"),
