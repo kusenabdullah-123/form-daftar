@@ -4,19 +4,106 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Data</title>
+    <title>Form Pendaftaran Kloso</title>
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <div class="container">
       <div class="box-form">
-        <form action="">
+        <h1>Form Pendaftaran</h1>
+        <form id="daftar" enctype="multipart/form-data" method="POST">
           <div class="input">
             <label for="nama">Nama</label>
             <input type="text" name="nama" id="nama" />
           </div>
+          <div class="input">
+            <label for="angkatan">Angkatan</label>
+            <input type="text" name="angkatan" id="angkatan" />
+          </div>
+          <div class="input">
+            <label for="nama">Jurusan</label>
+            <select name="jurusan" id="jurusan">
+              <option value="Teknik Informatika">Teknik Informatika</option>
+              <option value="Manajemen Informatika">
+                Manajemen Informatika
+              </option>
+            </select>
+          </div>
+          <div class="input">
+            <label for="nama">Jenis Kelamin</label>
+            <input
+              type="radio"
+              name="jenis"
+              id="laki-laki"
+              checked
+              value="laki-laki"
+            />
+            <label for="laki-laki">Laki Laki</label>
+            <input type="radio" name="jenis" id="perempuan" value="perempuan" />
+            <label for="perempuan">perempuan</label>
+          </div>
+          <div class="input">
+            <label for="alasan">Alasan Masuk Kloso</label>
+            <textarea name="alasan" id="alasan" cols="30" rows="10"></textarea>
+          </div>
+          <div class="input">
+            <label for="foto">Foto</label>
+            <input type="file" name="foto" id="foto" />
+          </div>
+          <div class="input">
+            <label></label>
+            <button type="submit">Submit</button>
+          </div>
         </form>
       </div>
+      <div class="result-data">
+        <h1>Data Anggota Kloso</h1>
+        <div class="container">
+          <div class="card">
+            <figure>
+              <img src="" alt="" />
+            </figure>
+            <p>Nama</p>
+            <p>Alamat</p>
+            <p>Jurusan</p>
+            <p>Jenis Kelamin</p>
+          </div>
+          <div class="card">
+            <figure>
+              <img src="" alt="" />
+            </figure>
+            <p>Nama</p>
+            <p>Alamat</p>
+            <p>Jurusan</p>
+            <p>Jenis Kelamin</p>
+          </div>
+          <div class="card">
+            <figure>
+              <img src="" alt="" />
+            </figure>
+            <p>Nama</p>
+            <p>Alamat</p>
+            <p>Jurusan</p>
+            <p>Jenis Kelamin</p>
+          </div>
+          <div class="card">
+            <figure>
+              <img src="" alt="" />
+            </figure>
+            <p>Nama</p>
+            <p>Alamat</p>
+            <p>Jurusan</p>
+            <p>Jenis Kelamin</p>
+          </div>
+        </div>
+      </div>
     </div>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.24.0/axios.min.js"
+      integrity="sha512-u9akINsQsAkG9xjc1cnGF4zw5TFDwkxuc9vUp5dltDWYCSmyd0meygbvgXrlc/z7/o4a19Fb5V0OUE58J7dcyw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
     <script src="script.js"></script>
   </body>
 </html>

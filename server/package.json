@@ -10,6 +10,9 @@
   "author": "M Kusen Abdullah",
   "license": "ISC",
   "dependencies": {
-    "formidable": "^2.0.1"
+    "formidable": "^2.0.1",
+    "multer": "^1.4.3",
+    "multiparty": "^4.2.2",
+    "parse-multipart-data": "^1.2.1"
   }
 }
