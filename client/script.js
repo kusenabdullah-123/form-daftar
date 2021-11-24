@@ -1,13 +1,53 @@
 document.addEventListener("DOMContentLoaded", async () => {
+  const getData = async () => {
+    const response = await axios.get("http://localhost:5000/anggota");
+    console.log(response.data.data);
+    let htmlCard = "";
+    response.data.data.forEach((item) => {
+      htmlCard += `
+      <div class="card">
+      <figure>
+        <img src="data:${item.tipe};base64, ${item.foto}" alt="" />
+      </figure>
+      <p>Nama : ${item.nama}</p>
+      <p>Angkatan : ${item.angkatan}</p>
+      <p>Jurusan : ${item.jurusan}</p>
+      <p>Jenis Kelamin : ${item.jenis}</p>
+    </div>`;
+    });
+    document.querySelector(".container-anggota").innerHTML = htmlCard;
+  };
+  getData();
+  const Toast = Swal.mixin({
+    toast: true,
+    position: "top-end",
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      toast.addEventListener("mouseenter", Swal.stopTimer);
+      toast.addEventListener("mouseleave", Swal.resumeTimer);
+    },
+  });
+
   const postData = async (data) => {
     axios
       .post("http://localhost:5000/anggota", data)
       .then(function (response) {
-        console.log(response);
+        if (response.status == 200) {
+          Toast.fire({
+            icon: "success",
+            title: "Successfully Add Data",
+          });
+        }
       })
       .catch(function (error) {
         console.log(error);
       });
+  };
+  const deleteData = async (id) => {
+    const res = await axios.delete(`http://localhost:5000/anggota?id=${id}`);
+    console.log(res);
   };
   document
     .querySelector("form#daftar")
