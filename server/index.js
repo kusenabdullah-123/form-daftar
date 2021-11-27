@@ -26,22 +26,14 @@ http
       }
     } else if (req.method == "POST") {
       if (req.url == "/anggota") {
-        const form = new multiparty.Form();
-        let body = {};
-        form.on("part", (part) => {
-          part.on("data", (data) => {
-            if (part.filename) {
-              const baseImg = Buffer.from(data).toString("base64");
-              body[part.name] = `${baseImg}`;
-              body["tipe"] = `${part.headers["content-type"]}`;
-            } else {
-              body[part.name] = Buffer.from(data).toString("utf-8");
-            }
-          });
+        let body;
+        req.on("data", (chunk) => {
+          body = chunk.toString();
         });
-        form.on("close", async () => {
-          body["id"] = max + 1;
-          data.push(body);
+        req.on("end", async () => {
+          const parseBody = JSON.parse(body);
+          parseBody["id"] = max + 1;
+          data.push(parseBody);
           await fs.writeFile(
             path.join(__dirname, "/data.json"),
             JSON.stringify(data),
@@ -51,9 +43,9 @@ http
           res.setHeader("Access-Control-Allow-Methods", "OPTIONS, POST");
           res.setHeader("Access-Control-Max-Age", 2592000);
           res.setHeader("Content-Type", "application/json");
-          res.end(JSON.stringify({ status: "success" }));
+          res.end(JSON.stringify({ status: "success Add data" }));
+          return;
         });
-        form.parse(req);
       } else {
         res.setHeader("Access-Control-Allow-Origin", "*");
         res.setHeader("Access-Control-Allow-Methods", "OPTIONS, POST");
@@ -62,7 +54,7 @@ http
         res.end(JSON.stringify({ msg: "404 Not Found" }));
         return;
       }
-    } else if (req.method == "DELETE") {
+    } else if (req.method == "DELETE" || req.method == "OPTIONS") {
       const urlSplit = req.url.split("?");
       const i = urlSplit[1].split("=")[1];
       if (urlSplit[0] == "/anggota") {
