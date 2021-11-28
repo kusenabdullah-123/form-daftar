@@ -9,7 +9,5 @@
   },
   "author": "M Kusen Abdullah",
   "license": "ISC",
-  "dependencies": {
-    "multiparty": "^4.2.2"
-  }
+  "dependencies": {}
 }

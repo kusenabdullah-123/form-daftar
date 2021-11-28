@@ -9,25 +9,28 @@ const Toast = Swal.mixin({
     toast.addEventListener("mouseleave", Swal.resumeTimer);
   },
 });
+const getData = async () => {
+  const response = await axios({
+    method: "get",
+    url: "http://localhost:5000/anggota",
+  });
+  let htmlCard = "";
+  response.data.data.forEach((item) => {
+    htmlCard += `
+    <div class="card">
+    <figure>
+      <img src="${item.image}" alt="" />
+    </figure>
+    <p>Nama : ${item.nama}</p>
+    <p>Angkatan : ${item.angkatan}</p>
+    <p>Jurusan : ${item.jurusan}</p>
+    <p>Jenis Kelamin : ${item.jenis}</p>
+    <div class="form-tombol"><button data-id="${item.id}" class="tombol-delete">Delete</button></div>
+  </div>`;
+  });
+  document.querySelector(".container-anggota").innerHTML = htmlCard;
+};
 document.addEventListener("DOMContentLoaded", async () => {
-  const getData = async () => {
-    const response = await axios.get("http://localhost:5000/anggota");
-    let htmlCard = "";
-    response.data.data.forEach((item) => {
-      htmlCard += `
-      <div class="card">
-      <figure>
-        <img src="${item.image}" alt="" />
-      </figure>
-      <p>Nama : ${item.nama}</p>
-      <p>Angkatan : ${item.angkatan}</p>
-      <p>Jurusan : ${item.jurusan}</p>
-      <p>Jenis Kelamin : ${item.jenis}</p>
-      <div class="form-tombol"><button data-id="${item.id}" class="tombol-delete">Delete</button></div>
-    </div>`;
-    });
-    document.querySelector(".container-anggota").innerHTML = htmlCard;
-  };
   getData();
 
   const postData = async (data) => {
@@ -81,14 +84,21 @@ document.addEventListener("DOMContentLoaded", async () => {
       e.target.className == "tombol-delete"
     ) {
       const id = e.target.dataset.id;
-      const r = await axios.delete(`http://localhost:5000/anggota?id=${id}`);
-      if (r.status == 200) {
-        Toast.fire({
-          icon: "success",
-          title: "Successfully Delete Data",
-        });
-        getData();
-      }
+      const r = await fetch("http://localhost:5000/anggota", {
+        method: "DELETE",
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+        },
+        body: JSON.stringify({ id }),
+      });
+      console.log(r);
+      // if (r.status == 200) {
+      //   Toast.fire({
+      //     icon: "success",
+      //     title: "Successfully Delete Data",
+      //   });
+      //   getData();
+      // }
     }
   });
 });
