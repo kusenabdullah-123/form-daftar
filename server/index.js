@@ -1,12 +1,12 @@
 const http = require("http");
-const fs = require("fs/promises");
-const path = require("path");
+const {
+  getDataAll,
+  postData,
+  deleteData,
+  setHeader,
+} = require("./anggotaController");
 http
   .createServer(async (req, res) => {
-    const file = await fs.readFile(path.join(__dirname, "/data.json"), "utf-8");
-    let data = JSON.parse(file);
-    const id = data.map((item) => item.id);
-    const max = data.length > 0 ? Math.max(...id) : 0;
     const headers = {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Methods": "OPTIONS, POST, GET,DELETE",
@@ -21,17 +21,8 @@ http
     }
     if (req.method == "GET") {
       if (req.url == "/anggota") {
-        res.statusCode = 200;
-        res.setHeader("Content-Type", "application/json");
-        res.setHeader("Access-Control-Allow-Origin", "*");
-        res.setHeader(
-          "Access-Control-Allow-Headers",
-          "Origin, X-Requested-With, Content-Type, Accept"
-        );
-        res.setHeader(
-          "Access-Control-Allow-Methods",
-          "DELETE,GET, POST, PUT, PATCH"
-        );
+        setHeader(res);
+        const data = await getDataAll();
         res.end(JSON.stringify({ status: "success", data }));
         return;
       } else {
@@ -46,29 +37,12 @@ http
           body = chunk.toString();
         });
         req.on("end", async () => {
-          const parseBody = JSON.parse(body);
-          parseBody["id"] = max + 1;
-          data.push(parseBody);
-          await fs.writeFile(
-            path.join(__dirname, "/data.json"),
-            JSON.stringify(data),
-            "utf-8"
-          );
-          res.statusCode = 200;
-          res.setHeader("Content-Type", "application/json");
-          res.setHeader("Access-Control-Allow-Origin", "*");
-          res.setHeader(
-            "Access-Control-Allow-Headers",
-            "Origin, X-Requested-With, Content-Type, Accept"
-          );
-          res.setHeader(
-            "Access-Control-Allow-Methods",
-            "DELETE,GET, POST, PUT, PATCH"
-          );
+          await postData(body);
+          setHeader(res);
           res.end(JSON.stringify({ status: "success Add data" }));
         });
       } else {
-        res.statusCode = 200;
+        res.statusCode = 404;
         res.setHeader("Content-Type", "application/json");
         res.setHeader("Access-Control-Allow-Origin", "*");
         res.setHeader(
@@ -88,23 +62,8 @@ http
       });
       req.on("end", async () => {
         const { id } = bodyDelete;
-        const newData = data.filter((item) => item.id !== Number.parseInt(id));
-        await fs.writeFile(
-          path.join(__dirname, "/data.json"),
-          JSON.stringify(newData),
-          "utf-8"
-        );
-        res.statusCode = 200;
-        res.setHeader("Content-Type", "application/json");
-        res.setHeader("Access-Control-Allow-Origin", "*");
-        res.setHeader(
-          "Access-Control-Allow-Headers",
-          "Origin, X-Requested-With, Content-Type, Accept"
-        );
-        res.setHeader(
-          "Access-Control-Allow-Methods",
-          "DELETE,GET, POST, PUT, PATCH"
-        );
+        await deleteData(id);
+        setHeader(res);
         res.end(JSON.stringify({ status: "success delete data" }));
       });
     }
